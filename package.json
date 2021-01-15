@@ -5,9 +5,10 @@
   "main": "dev/networkNode.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "node1": "nodemon dev/networkNode.js 3001 localhost",
-    "node2": "nodemon dev/networkNode.js 3002 localhost",
-    "node3": "nodemon dev/networkNode.js 3003 localhost"
+    "node1": "nodemon dev/networkNode.js 3001 http://localhost:3001",
+    "node2": "nodemon dev/networkNode.js 3002 http://localhost:3002",
+    "node3": "nodemon dev/networkNode.js 3003 http://localhost:3003",
+    "node4": "nodemon dev/networkNode.js 3004 http://localhost:3004"
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +17,7 @@
     "express": "^4.17.1",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.6",
+    "request": "^2.88.2",
     "sha256": "^0.2.0",
     "uuid": "^8.3.2"
   }

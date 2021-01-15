@@ -1,13 +1,12 @@
 var sha256 = require('sha256')
 var uuid = require('uuid');
-var host = process.argv[3]
-var port = process.argv[2]
+var url = process.argv[3]
 
 function Blockchain(){
 	this.chain = [];
 	this.memPool = [];
 	this.createNewBlock();
-	this.currentNodeURL = "http://"+host+':'+port
+	this.currentNodeURL = url
 	this.networkNodes = [];
 	this.nodeAddress = uuid.v4().split('-').join('')
 }
@@ -46,6 +45,7 @@ Blockchain.prototype.proofOfWork = function(previousHash,blockData){
 	while(hash.substring(0,4) != '0000'){
 		nonce++
 		hash = this.blockHashing(previousHash,blockData,nonce);
+		//console.log(hash)
 	}
 	return nonce;
 }
@@ -70,10 +70,15 @@ Blockchain.prototype.createNewTx = function(amount,sender,receiver){
 		'timestamp':Date.now(),
 		'amount':amount,
 		'receiver':receiver,
-		'sender':sender
+		'sender':sender,
+		'txHash':uuid.v4().split('-').join('')
 	}
-	this.memPool.push(tx)
 	return tx;
+}
+
+Blockchain.prototype.addTxToMemPool = function(txData){
+	this.memPool.push(txData);
+	return 'tx Added';
 }
 
 
