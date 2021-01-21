@@ -107,6 +107,7 @@ app.post('/receive-new-block',(req,res)=>{
 	}
 })
 
+//endpoint for registering new node in the network
 app.post('/register-node',(req,res)=>{
 	var newNetworkNode = req.body.newNodeUrl
 	if(blockchain.networkNodes.indexOf(newNetworkNode) == -1 && newNetworkNode != blockchain.currentNodeURL){
@@ -117,6 +118,7 @@ app.post('/register-node',(req,res)=>{
 	}
 })
 
+//endpoint for registering nodes in bulk in the network
 app.post('/register-node-bulk',(req,res)=>{
 	var bulkNodes = req.body.bulkNodes;
 	bulkNodes.forEach((nodeUrl,index)=>{
@@ -127,6 +129,7 @@ app.post('/register-node-bulk',(req,res)=>{
 	res.json({"msg":"Bulk Registration Done!"})
 })
 
+//endpoint for registering new node and broadcast it to the whole network
 app.post('/register-and-broadcast',(req,res)=>{
 	var newNodeURL = req.body.newNodeurl;
 	if(blockchain.networkNodes.indexOf(newNodeURL) == -1 && newNodeURL != blockchain.currentNodeURL){
@@ -148,9 +151,9 @@ app.post('/register-and-broadcast',(req,res)=>{
 	}else{
 		res.json({"msg":"Registeration Failed"})
 	}
-
 })
 
+//check longest valid chain in the network and replace self data by longest chain data
 app.post('/consensus', (req,res)=>{
 	var promises = [];
 	blockchain.networkNodes.forEach(nodeurl =>{
@@ -181,6 +184,7 @@ app.post('/consensus', (req,res)=>{
 	})
 });
 
+//running server on specific port
 app.listen(nodePort,()=>{
 	console.log('Server Started port listening on '+ nodePort)
 })
