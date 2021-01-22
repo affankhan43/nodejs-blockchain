@@ -5,10 +5,25 @@ var url = process.argv[3]
 function Blockchain(){
 	this.chain = [];
 	this.memPool = [];
-	this.createNewBlock();
+	this.generateGenesis(); /// Creates Genesis Block only once
 	this.currentNodeURL = url
 	this.networkNodes = [];
 	this.nodeAddress = uuid.v4().split('-').join('')
+}
+
+Blockchain.prototype.generateGenesis = function(){
+	var block = {
+		'height': 0,
+		'timestamp':'1610783475068',
+		'transactions':[],
+		'previousHash':'0',
+		'hash':'0',
+		'nonce':'100'
+	}
+	this.chain.push(block)
+	this.memPool = [];
+	console.log('Genesis Block Created ')
+	return block;	
 }
 
 Blockchain.prototype.createNewBlock = function() {
@@ -19,7 +34,6 @@ Blockchain.prototype.createNewBlock = function() {
 	}
 	var nonce = this.proofOfWork(previousHash,this.memPool)
 	var hash = this.blockHashing(previousHash,this.memPool,nonce)
-	var reward = this.createNewTx(6,'0000',this.nodeAddress) //miner
 	var block = {
 		'height': this.chain.length,
 		'timestamp':Date.now(),
@@ -91,4 +105,17 @@ Blockchain.prototype.getTxsOfBlock = function(height) {
 	}
 	
 };
+
+Blockchain.prototype.chainIsValid = function(blockchain){
+	var validChain = true;
+	for (var i = 1; i < blockchain.length; i++) {
+		if(blockchain[i].height != i) validChain = false;
+		if(blockchain[i-1].hash != blockchain[i].previousHash) validChain = false;
+		if(this.blockHashing(blockchain[i].previousHash,blockchain[i].transactions,blockchain[i].nonce) != blockchain[i].hash) validChain = false;
+	}
+	if(blockchain[0].hash != '0' || blockchain[0].previousHash != '0' || blockchain[0].nonce != '100'){
+		validChain = false;
+	}
+	return validChain
+}
 module.exports = Blockchain;
