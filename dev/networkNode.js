@@ -28,11 +28,11 @@ app.get('/blockchain',(req,res)=>{
 
 
 //Broadcast new Transaction
-
 app.post('/txAndBroadcast',(req,res)=>{
 	// if clauses
 	var txData = blockchain.createNewTx(req.body.amount,req.body.sender,req.body.receiver)
 	blockchain.addTxToMemPool(txData)
+	//broadcasting to all networknodes
 	var promises = [];
 	blockchain.networkNodes.forEach((nodeurl)=>{
 		var apiRequest2 = {
@@ -46,9 +46,9 @@ app.post('/txAndBroadcast',(req,res)=>{
 	Promise.all(promises).then((data)=>{
 		res.json({"msg":"Txs Broadcast Successfully"})
 	})
-
 })
 
+//endpoint for receiving new transactions
 app.post('/addTx',(req,res)=>{
 	var txData = req.body.tx
 	blockchain.addTxToMemPool(txData)
@@ -57,10 +57,12 @@ app.post('/addTx',(req,res)=>{
 
 })
 
+//Mine new block and broadcast to the network
 app.get('/mineAndBroadcast',(req,res)=>{
 	var block = blockchain.createNewBlock();
 	var reward = blockchain.createNewTx(12,"00000",blockchain.nodeAddress)
 	blockchain.addTxToMemPool(reward)
+	//broadcasting block to all networknodes
 	var promises = [];
 	blockchain.networkNodes.forEach((nodeurl)=>{
 		var apiRequest2 = {
@@ -72,6 +74,7 @@ app.get('/mineAndBroadcast',(req,res)=>{
 		promises.push(request(apiRequest2))
 	})
 	Promise.all(promises).then((data)=>{
+		//broadcasting reward transaction to all networknodes
 		var promises2 = [];
 		blockchain.networkNodes.forEach((nodeurl)=>{
 			var apiRequest2 = {
@@ -90,6 +93,7 @@ app.get('/mineAndBroadcast',(req,res)=>{
 	res.json({'success':true,'msg':'Block Mined Successfully','block':block})
 })
 
+//endpoint for receiving new blocks
 app.post('/receive-new-block',(req,res)=>{
 	var block = req.body.blockData;
 	var index = blockchain.chain.length;
