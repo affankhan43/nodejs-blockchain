@@ -102,15 +102,13 @@ Blockchain.prototype.addTxToMemPool = function(txData){
 	return 'tx Added';
 }
 
-
 Blockchain.prototype.getTxsOfBlock = function(height) {
 	var block = this.chain[height]
 	if(block){
 		return block.transactions;
 	}else{
 		return 'Block Not Found';
-	}
-	
+	}	
 };
 
 Blockchain.prototype.chainIsValid = function(blockchain){
@@ -125,4 +123,5 @@ Blockchain.prototype.chainIsValid = function(blockchain){
 	}
 	return validChain
 }
+
 module.exports = Blockchain;
