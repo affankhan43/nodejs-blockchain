@@ -1,3 +1,9 @@
+/*
+	Blockchain prototype from scratch in nodejs
+	Author: Affan Ahmed Khan
+	File: networkNodes.js (API Routes)
+*/
+
 var express = require('express')
 var bodyParser  = require('body-parser')
 var morgan = require('morgan')

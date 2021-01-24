@@ -1,7 +1,14 @@
+/*
+	Blockchain prototype from scratch in nodejs
+	Author: Affan Ahmed Khan
+	File: blockchain.js
+*/
+
 var sha256 = require('sha256')
 var uuid = require('uuid');
 var url = process.argv[3]
 
+//Constructor function initating blockchain structure
 function Blockchain(){
 	this.chain = [];
 	this.memPool = [];
