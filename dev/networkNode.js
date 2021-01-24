@@ -32,7 +32,7 @@ app.post('/txAndBroadcast',(req,res)=>{
 		var apiRequest2 = {
 			method:'POST',
 			uri:nodeurl+'/addTx',
-			body:{txData:txData},
+			body:{tx:txData},
 			json:true
 		}
 		promises.push(request(apiRequest2))
@@ -44,17 +44,12 @@ app.post('/txAndBroadcast',(req,res)=>{
 })
 
 app.post('/addTx',(req,res)=>{
-	var txData = req.body.txData
+	var txData = req.body.tx
 	blockchain.addTxToMemPool(txData)
 	console.log("New Transaction Received")
 	res.json({"msg":"New Transaction Received"})
 
 })
-// app.post('/generateTx',(req,res)=>{
-//  console.log(req.body)
-//  var tx  = blockchain.createNewTx(req.body.amount,req.body.sender,req.body.receiver)
-//  res.json({"success":true,"message":"Tx added in mempool will be add in blockheigh "+blockchain.chain.length,'tx':tx})
-// })
 
 app.get('/mineAndBroadcast',(req,res)=>{
 	var block = blockchain.createNewBlock();
@@ -76,7 +71,7 @@ app.get('/mineAndBroadcast',(req,res)=>{
 			var apiRequest2 = {
 				method:'POST',
 				uri:nodeurl+'/addTx',
-				body:{txData:reward},
+				body:{tx:reward},
 				json:true
 			}
 			promises2.push(request(apiRequest2))
@@ -154,7 +149,6 @@ app.post('/consensus', (req,res)=>{
  	})
 	Promise.all(promises).then((blockchains) =>{
 		var currentLongestChainLength = blockchain.chain.length;
-		var currentMempool = blockchain.mempool;
 		var longestChain = null
 		var updatedMempool = null
 		blockchains.forEach((item)=>{
@@ -180,3 +174,16 @@ app.post('/consensus', (req,res)=>{
 app.listen(nodePort,()=>{
 	console.log('Server Started port listening on '+ nodePort)
 })
+
+
+/* Block Explorer
+
+Routes
+* /block  -> get all blocks (timestamp,hash)
+* /block/:height  -> get blocks by height
+* /block/:hash    -> get blocks by hash
+* /txs -> get all txs
+* /tx/:txhash     -> get specific tx data by tx hash
+* /address/:address  -> get txs by having address in receiver or sender
+
+*/
